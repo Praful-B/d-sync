@@ -1,0 +1,35 @@
+project/
+├── bin/
+│   └── cli.js          ← the executable (has #!/usr/bin/env node at top)
+├── lib/
+│   ├── daemon.js       ← the long-running background worker
+│   ├── server.js       ← express app that serves GUI + API
+│   └── ...
+├── web/                ← the React/Vue frontend (separate build)
+│   ├── src/
+│   └── dist/           ← built output, served statically by express
+├── package.json
+└── index.js            ← entry: decides whether to start daemon or just CLI
+
+=======================================================================================
+
+lib/
+├── daemon.js          ← orchestrator, the EventEmitter bus
+│
+├── fs/                ← anything touching the filesystem
+│   ├── watcher.js     ← chokidar wrapper
+│   ├── chunker.js     ← split file into chunks
+│   └── hasher.js      ← hash a file or chunk
+│
+├── sync/              ← business logic: the rules of your app
+│   ├── index.js       ← "when file added, chunk it, hash it, store it"
+│   └── delta.js       ← diff local state vs peer state
+│
+├── network/           ← anything touching the network
+│   ├── webrtc.js
+│   └── signaling.js
+│
+└── db/                ← database access
+    ├── index.js       ← opens SQLite connection
+    ├── files.js       ← queries about files
+    └── chunks.js      ← queries about chunks
