@@ -1,0 +1,5 @@
+1. generate a one - time - url where a user can install all the files in the folder without the app being installed
+		- - Add a feature where your Node backend can generate a one-time URL. You send that URL to a friend, they open it in a standard web browser (no app required), and WebRTC establishes a direct connection between their browser and your local daemon. You can now securely stream a 5GB file directly to them.
+
+2. git like logs
+3. Greate CLI DX experience

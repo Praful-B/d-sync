@@ -1,0 +1,43 @@
+Application will be a
+    Headless Deamon with a Local Web GUI
+
+    Deamon: background worker that watches your hard drive for changes
+    API server: The express server that serves UI and talks to the daemon
+    Frontend: frontend stuff
+
+use chokidar to watch for file changes
+automatically opens browser - package called (open)
+
+
+
+here daemon is a standard script that never allows its event loop to be empty.
+as long as the node has an active listener (file watcher, open websocket)
+
+daemon must run asynchronously.
+    responsibilities:
+        the watcher (chokidar)
+        The local state manager - daemon needs  lightweight local database (SQLite or simple JSON) to remember the current state of the folder.
+           when watcher detects a new file, deamon reads it does work(caliculate chunk, hashes them, and updates the local db)
+        The network Engine: Daemon holds the active WebRTC connection to node B. when state manager finishes hashing a new file, the daemon immediatly looks at WebRTC tunned and says "Hey, I have a new hash. Do you need this chunk?"
+
+IPC (Inter-Process Communication) vs. Shared Memory
+The Single-Process Route (Recommended):
+The daemon and the Express server run in the exact same server.js file. The daemon can directly emit events (using Node's built-in EventEmitter) that the Express WebSockets pick up and push to the React frontend.
+
+The True Microservice Route:
+The daemon runs as daemon.js and the UI server runs as api.js. They are completely separate processes. They communicate via IPC (Inter-Process Communication) using local UNIX sockets or TCP ports. This is hardcore, but likely overkill for the MVP.
+
+
+The Execution Environment:
+    Phase 1: Development Environment
+    When you are actively building, you just run it in the foreground of your terminal. You want to see every single console.log when a file is chunked or a WebRTC connection drops.
+
+    Phase 2: Production Environment (The Node Way)
+    When you want it to run seamlessly in the background, the industry standard in the Node ecosystem is PM2 (Process Manager 2).
+
+    . You install it globally, tell it to start your daemon, and PM2 detaches it from the terminal.
+    . PM2 acts as a watchdog: if your file-chunking algorithm hits a memory limit and crashes the daemon, PM2 will instantly restart the process in milliseconds.
+    . It handles all the log rotation (saving your console.logs to a background text file).
+
+
+[ OPTIONAL ]: Make a service (like for Windows services) or .service file for linux

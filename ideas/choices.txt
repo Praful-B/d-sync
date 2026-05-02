@@ -1,0 +1,47 @@
+My current architecture 
+	path 1: Cloud (rejected)
+		. build a centralized server that handles all the data (requires a server to stay active all the time)
+		. Traditional backend architecture
+		. exactly what I want to avoid.
+	path 2: Peer - to - Peer 
+		. Connect devices directly. using a decentralized route
+	    . inf scalability
+		. low server cost
+		. problems that can be only fixed by a Signaling Server for now
+
+Problem 1:
+	you cannot just ping random computers connected to the internet
+	
+	sol 1 (
+		- castle(must send a outbound signal first -- needs a signaling server) and the store (open ports)
+		- A tiny Node.js "Signaling Server" hosted on the public internet. Both devices make an outbound connection to this server. The server introduces them, allowing WebRTC to trick the routers into keeping those connections open and establishing a direct P2P tunnel.
+	)
+	sol 2 ( Port forwarding and UPnP
+		- Self hosting signaling server (By the user - in their machine) - works perfectly in LAN but fails without port forwarding 
+		- UPnP: ask the router for an open a port but create a massive security venerability
+	------> [ Explore ] alternatives for UPnP (try your best to not have a signaling server) 
+	)
+
+knowledge discovery:
+	BitTorrent -> Uses public swarns 'seeders/leechers' to distribute single file to millions of nodes safely
+	--> need a private 1-to-1 WebRTC data Channel. borrow file chunking from torrents and use it to securely pipe data b/w two trusted devices without a swarn
+
+
+
+
+
+
+
+
+Current Situation: 
+	Build 2 paths:
+		path 1:
+			allow user to share file but need to connect to a signaling server first
+		path 2:
+			allow user to self host the signaling server by using UPnP -> user knows its risk
+
+
+
+pick the best
+    NAT Traversal Technique from https://www.checkmynat.com/posts/nat-traversal-techniques-for-peer-to-peer-connections/
+
